@@ -4,6 +4,6 @@
 
 num = int(input('Input integer number: '))
 if num > 0:
-    print(f'Sum of first positive numbers is: {sum(i for i in range(1, num+1))}')
+    print(f'Sum of first positive numbers is: {sum(range(1, num+1))}')
 else:
     print('Non correct input. Number must be greater then zero.')
