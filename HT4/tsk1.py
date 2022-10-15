@@ -17,4 +17,4 @@ def season(month):
         return 'Illegal number of month '
     
 input_month = int(input('Input number of month: '))
-print(f'It is {season(input_month)} month')
+print(f"It's a {season(input_month)} month")
