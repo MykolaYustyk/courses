@@ -12,8 +12,8 @@ def calculation(first_digit, operation, second_digit) :
     elif operation == "/":
         try:
             result = float(first_digit) / float(second_digit)
-        except ZeroDivisionError:
-            print('ERROR. Division by zero.')
+        except ZeroDivisionError as err:
+            print(f'ERROR. {err}')
     elif operation == "*" :
         result = float(first_digit) * float(second_digit)
     elif operation == '**':
