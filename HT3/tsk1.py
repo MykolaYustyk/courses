@@ -4,7 +4,7 @@ The list of tuples can be hardcoded.
 The "replacement" value is entered by user.
 The number of elements in the tuples must be different.
 '''
-list_of_tuples =[(1, 2, 3), ('a', 'b'), (100,), (12, 'a', 177, 400),(18,'aaaaa', 10, 12, 14),()]
+list_of_tuples =[(1, 2, 3), (), ('a', 'b'), (100,), (12, 'a', 177, 400),(18,'aaaaa', 10, 12, 14),()]
 result = []
 print(f'Input list is: {list_of_tuples}')
 replacement_value = input('Input replacement value: ')
