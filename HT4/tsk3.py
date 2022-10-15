@@ -13,13 +13,13 @@
 def compare(x, y) : 
     if x > y :
         z = x - y
-        print(f'{x} більше ніж {y} на {z}')
+        return f'{x} більше ніж {y} на {z}'
     elif x < y : 
         z = y - x
-        print(f'{y} більше ніж {x} на {z}')
+        return f'{y} більше ніж {x} на {z}'
     else : 
-        print(f"{x} дорівнює {y}")
-    return 
+        return f"{x} дорівнює {y}"
+
 
 x, y = map(int, input('Введіть два числа, розділені комою, які бажаєте порівняти ').split(','))
-compare(x, y)
+print(compare(x, y))
