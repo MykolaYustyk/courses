@@ -25,5 +25,5 @@ def calculation(first_digit, operation, second_digit) :
 print("Введіть числа і операцію розділені пробілами. \n Наприклад: 2 + 5. \n", end = '')
 val1, operation, val2 = input().split()
 res = calculation(val1, operation, val2)
-if res or res == 0:
+if res is not None :
     print(f"= {res :.2f}")
