@@ -20,7 +20,7 @@ def work_30_50(word):
  
 def work_until_30(word):
     sum_of_digit = 0
-    word_without_digits = ''.join(char for char in word if char not in '0123456789')
+    word_without_digits = ''.join(char for char in word if char.isdigit())
     for char in word:
        if char.isdigit():
           sum_of_digit += int(char)

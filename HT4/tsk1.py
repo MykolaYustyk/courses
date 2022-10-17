@@ -3,7 +3,6 @@
 пору року, до якої цей мiсяць належить (зима, весна, лiто або осiнь).
 У випадку некоректного введеного значення - виводити відповідне повідомлення.
 '''
-
 def season(month):
     if month in [1, 2, 12]:
         return 'winter'
@@ -16,5 +15,8 @@ def season(month):
     else:
         return 'Illegal number of month '
     
-input_month = int(input('Input number of month: '))
-print(f"It's a {season(input_month)} month")
+input_month = input('Input number of month: ')
+if input_month.isdigit():
+    print(f"It's a {season(int(input_month))} month")
+else:
+    print('Wrong input. Data must be integer. ')
