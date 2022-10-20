@@ -8,7 +8,7 @@ def square(side):
     result =[]
     result.append(4 * side)
     result.append(side ** 2)
-    result.append(side * 1.41)
+    result.append(side * 2 ** 0.5)
     return tuple(result)
 
 
