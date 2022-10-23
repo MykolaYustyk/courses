@@ -19,7 +19,12 @@ import string
 
 def morse_decoder(morse_message):
     list_of_letters = list(string.ascii_uppercase) +['SOS']
-    list_of_sign = ['.-', '-...', '-.-.', ' -..', '.', '..-.', '--.', '....', '..', '.---', '-.-', '.-..', '--', '-.', '---', '.--.', '--.-', '.-.', '...', '-', '..-', '...-', '.--', '-..-', '-.--', '--..', '...---...']
+    list_of_sign = ['.-', '-...', '-.-.', ' -..', '.', '..-.',
+                    '--.', '....', '..', '.---', '-.-', '.-..',
+                    '--', '-.', '---', '.--.', '--.-', '.-.',
+                    '...', '-', '..-', '...-', '.--', '-..-',
+                    '-.--', '--..', '...---...'
+                    ]
     dict_result = {sign: letter for sign, letter in zip(list_of_sign, list_of_letters)}
     
     print(f'Input Morze massage is: {morse_message}')
