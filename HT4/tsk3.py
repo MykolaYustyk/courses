@@ -7,6 +7,7 @@
     x > y;       вiдповiдь - "х бiльше нiж у на z"
     x < y;       вiдповiдь - "у бiльше нiж х на z"
     x == y.      відповідь - "х дорівнює y"
+<<<<<<< HEAD
 
 '''
 
@@ -23,3 +24,21 @@ def compare(x, y) :
 
 x, y = map(int, input('Введіть два числа, розділені комою, які бажаєте порівняти ').split(','))
 compare(x, y)
+=======
+'''
+def compare(x, y) : 
+    if x > y :
+        z = x - y
+        return f'{x} більше ніж {y} на {z}'
+    elif x < y : 
+        z = y - x
+        return f'{y} більше ніж {x} на {z}'
+    else : 
+        return f"{x} дорівнює {y}"
+
+x, y = input('Введіть два числа, розділені комою, які бажаєте порівняти ').split(',')
+if x.isdigit() and y.isdigit():
+    print(compare(x, y))
+else:
+    print('Вхідні данні мають бути цілими числами.')
+>>>>>>> af041d30a19bf0e05ff3c974899142f933d24df5
