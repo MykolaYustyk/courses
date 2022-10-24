@@ -33,7 +33,7 @@ def validation(user_name, user_password, silent = False):
         
 username = input('What your name?: ')
 password = input('Input your password: ')
-silent = bool(input('Silent :').title())
+silent = bool(input('Silent: ').title())
 
 try:
     print(f'Result is {validation(username, password, silent)}')
@@ -41,3 +41,4 @@ except LoginExeption as exc:
     print(exc)
 finally:
     print('Stop'.center(8,'_'))
+    

@@ -12,6 +12,7 @@
       Status: OK
 '''
 
+
 class NameLengthException(Exception):
     pass
 
@@ -24,10 +25,10 @@ class StatusException(Exception):
     pass
 
 
-def name_password_validation(username, password, online_status = 'offline'):
+def name_password_validation(username, password, online_status='offline'):
     result = False
-    if not(3 <= len(username) <= 50):
-        raise NameLengthException('Iм\'я повинно бути не меншим за 3 символа і не більшим за 50')                              
+    if not (3 <= len(username) <= 50):
+        raise NameLengthException('Iм\'я повинно бути не меншим за 3 символа і не більшим за 50')
     if not (len(password) >= 8 and password.isalnum() and not password.isdigit() and not password.isalpha()):
         raise PasswordException('Пароль повинен бути не меншим за 8 символів і повинен мати хоча б одну цифру')
     if online_status != 'online':
@@ -37,12 +38,13 @@ def name_password_validation(username, password, online_status = 'offline'):
     return result
 
 
-list_of_users = [ ['user1', 'password1', 'online'],
-                  ['us', 'password2', 'online'],
-                  ['user3', 'psw', 'online'],
-                  ['user4', 'password4', ''],
-                  ['user5aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaapopo11111123333', 'password', 'online']   
-                ]
+list_of_users = [['user1', 'password1', 'online'],
+                 ['us', 'password2', 'online'],
+                 ['user3', 'psw', 'online'],
+                 ['user4', 'password4', ''],
+                 ['user5aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaapopo1111133',
+                  'password', 'online']
+                 ]
 status = ''
 
 for current_user in list_of_users:
@@ -50,12 +52,11 @@ for current_user in list_of_users:
         name, password, online_status = current_user
         if name_password_validation(name, password, online_status):
             status = 'Ok'
-            
+
     except (NameLengthException, PasswordException, StatusException) as exc:
         status = exc
     finally:
         print(f'Name: {name}\n Password: {password}\n Online status: {online_status}')
         print('-' * 20)
-        print(f'Status: {status}') 
+        print(f'Status: {status}')
         print()
-           

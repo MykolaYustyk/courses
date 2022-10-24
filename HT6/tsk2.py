@@ -8,6 +8,7 @@
 
 '''
 
+
 class NameLengthException(Exception):
     pass
 
@@ -22,8 +23,8 @@ class StatusException(Exception):
 
 def name_password_validation(username, password, online_status):
     result = False
-    if not(3 <= len(username) <= 50):
-        raise NameLengthException('Iм\'я повинно бути не меншим за 3 символа і не більшим за 50')                              
+    if not (3 <= len(username) <= 50):
+        raise NameLengthException('Iм\'я повинно бути не меншим за 3 символа і не більшим за 50')
     if not (len(password) >= 8 and password.isalnum() and not password.isdigit() and not password.isalpha()):
         raise PasswordException('Пароль повинен бути не меншим за 8 символів і повинен мати хоча б одну цифру')
     if online_status != 'online':
@@ -32,14 +33,15 @@ def name_password_validation(username, password, online_status):
         result = True
     return result
 
+
 user_name = input('Input your name: ')
 user_pass = input('Input password: ')
 user_status = input('Status: ').lower()
 
 try:
-    rez = name_password_validation(user_name, user_pass, user_status) 
+    rez = name_password_validation(user_name, user_pass, user_status)
     print(f'Результат: {rez}')
-except (NameLengthException, PasswordException, StatusException ) as exc:
+except (NameLengthException, PasswordException, StatusException) as exc:
     print(f'Помилка: {exc}')
 finally:
-    print(f'Програма завершила свою роботу.')       
+    print(f'Програма завершила свою роботу.')
