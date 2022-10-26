@@ -13,6 +13,7 @@
 
 '''
 
+
 def count_of_chars(input_string):
     return sum(1 for letter in set(input_string) if input_string.count(letter) > 1)
 

@@ -15,7 +15,7 @@ class ValueErrorException(Exception):
     pass
 
 
-def my_range(start, stop = None, step = None):
+def my_range(start, stop=None, step=None):
     if stop is None:
         stop = start
         start = 0
@@ -36,8 +36,8 @@ def my_range(start, stop = None, step = None):
                  
 
 try:
-    for i in my_range(10, 20, 5):
-        print(i, end = ' ')
+    for i in my_range(-1, -20, -5):
+        print(i, end=' ')
     print()       
 except ValueErrorException as exc:
     print(exc)
