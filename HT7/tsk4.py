@@ -14,10 +14,12 @@
    .......
 '''
 def my_generator(sequence):
-    temp = iter(sequence)
-    for i in temp:
+    for i in sequence:
+        yield i
+    
+    
+input_sequence = '123'
+while True:
+    result = my_generator(input_sequence)
+    for i in result:
         print(i)
-    
-    
-input_sequence = [1, 2, 3]
-print(my_generator(input_sequence))

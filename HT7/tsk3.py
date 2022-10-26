@@ -36,7 +36,7 @@ def my_range(start, stop = None, step = None):
                  
 
 try:
-    for i in my_range(10, -30, -5):
+    for i in my_range(10, 20, 5):
         print(i, end = ' ')
     print()       
 except ValueErrorException as exc:
