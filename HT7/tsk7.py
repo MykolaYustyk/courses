@@ -11,6 +11,6 @@ def new_list(list1, list2):
     return [elem for elem in list1 if elem not in list2]
 
 
-input_list1 = input('Input first list:').split(', ')
-input_list2 = input('Input second list:').split(', ')
+input_list1 = input('Input first list: ').split(', ')
+input_list2 = input('Input second list: ').split(', ')
 print(f'Result list: {list(map(int, new_list(input_list1, input_list2)))}')
