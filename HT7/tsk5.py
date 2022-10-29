@@ -13,10 +13,9 @@
 
 '''
 
-
 def count_of_chars(input_string):
-    return sum(1 for letter in set(input_string) if input_string.count(letter) > 1)
+    return sum(1 for letter in set(input_string.lower()) if input_string.count(letter) > 1)
 
 
-input_string = input('Input data string: ').lower()
+input_string = input('Input data string: ')
 print(f'Count of repeated chars is: {count_of_chars(input_string)}')

@@ -4,7 +4,6 @@
    
 '''
 
-
 def word_with_minimal_length(string):
     return min(len(word) for word in string.split())
 
