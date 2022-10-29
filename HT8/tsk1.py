@@ -39,11 +39,11 @@ def change_colors():
         time.sleep(1)
     return
     
-def work_process():
+def main():
     while True:
         change_colors()
         
     
 if __name__ == "__main__":
-    work_process()
+    main()
            
