@@ -50,8 +50,9 @@ def user_validation():
             break
         else:
             print("Користувача з таким ім'ям і/або таким паролем немає.")
-            print('Спробуйте ще раз ввести Ваші дані.')
-            print(f'У Вас ще {3 - attemp} спроби(a)')
+            if attemp < 3:
+                print('Спробуйте ще раз ввести Ваші дані.')
+                print(f'У Вас ще {3 - attemp} спроби(a)')
             attemp += 1
 
     return result
