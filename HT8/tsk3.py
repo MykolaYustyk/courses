@@ -29,9 +29,7 @@
 import json
 import datetime
 import csv
-import os
 import time
-
 
 def user_validation():
     result = [False, '']
@@ -54,14 +52,18 @@ def user_validation():
                 print('Спробуйте ще раз ввести Ваші дані.')
                 print(f'У Вас ще {3 - attemp} спроби(a)')
             attemp += 1
-
     return result
 
 
-def show_balance(user_name):
+def get_balance(user_name):
     with open(user_name + "_balance.txt", 'r') as file_balance:
         current_balance = file_balance.read()
         return current_balance
+    
+
+def print_balance(user_name):
+    return '\n'.join(['*' * 20,f'Ваш баланс: {get_balance(user_name)}','*' * 20])
+
 
 def write_new_balance(user_name, current_balance):
     with open(f'{user_name}_balance.txt', 'w') as file_balance:
@@ -76,8 +78,8 @@ def append_transaction(user_name, change_balance):
 
 
 def add_balance(user_name):
-    current_balance = int(show_balance(user_name))
-    print(f"Ваш баланс: {current_balance}") 
+    current_balance = int(get_balance(user_name))
+    print(print_balance(user_name))
     attemp = 1
     while True and attemp <= 3:
         while True:
@@ -97,14 +99,15 @@ def add_balance(user_name):
             print(f'У Вас ще {3 - attemp} спроби(a)')
             print()
             attemp += 1
+    print()
     print(write_new_balance(user_name, str(current_balance)))
     print()
     return
 
 
 def get_money(user_name):
-    current_balance = int(show_balance(user_name))
-    print(f"Ваш баланс: {current_balance}")
+    current_balance = int(get_balance(user_name))
+    print(print_balance(user_name))
     attemp = 1
     while True and attemp <= 3:
         while True:
@@ -113,7 +116,7 @@ def get_money(user_name):
                 sum_money = int(sum_money)
                 break
             else:
-                print('Сума провинна бути числом. Повторіть ввод')
+                print('Сума провинна бути додатнім числом. Повторіть ввод')
         if 0 <= sum_money <= current_balance:
             current_balance -= sum_money
             append_transaction(user_name, f'-{sum_money}')
@@ -124,6 +127,7 @@ def get_money(user_name):
             print(f'У Вас ще {3 - attemp} спроби(a)')
             print()
             attemp += 1
+    print()
     print(write_new_balance(user_name, str(current_balance)))
     print()
     return
@@ -156,8 +160,7 @@ def start():
         if valid:
             choice_menu = output_main_menu(input_user_name)
             if choice_menu == 1:
-                print(f'Ваш баланc: {show_balance(input_user_name)}')
-                print('*' * 20)
+                print(print_balance(input_user_name))
             elif choice_menu == 2:
                 add_balance(input_user_name)
             elif choice_menu == 3:
