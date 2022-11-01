@@ -27,7 +27,10 @@ colors = {'Red': 'Green',
           'Green': 'Red'
          }
 
+
 def change_colors():
+    color = ''
+
     for i in range(12):
         if 0 <= i < 4:
             color = 'Red'
@@ -38,12 +41,12 @@ def change_colors():
         print(color.ljust(8), colors[color].ljust(8))
         time.sleep(1)
     return
-    
+
+
 def main():
     while True:
         change_colors()
-        
-    
+
+
 if __name__ == "__main__":
     main()
-           
