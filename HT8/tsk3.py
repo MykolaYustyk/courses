@@ -32,15 +32,13 @@ import csv
 
 def user_validation():
     result = [False, '']
-    username = ''
-    password = ''
     attemp = 1
     while True and attemp <= 3:
         username = input("Введіть Ваше ім'я: ")
         password = input("Введіть Ваш пароль: ")
-        with open('users.csv', 'r',  newline='') as csvfile:
+        with open('users.csv', 'r', newline='') as csvfile:
             reader = csv.DictReader(csvfile)
-            dict_result = {row['user_name'] : row['password'] for row in reader}
+            dict_result = {row['user_name']: row['password'] for row in reader}
 
         if (username, password) in dict_result.items():
             result = [True, username]
@@ -134,7 +132,6 @@ def get_money(user_name):
 
 
 def output_main_menu(user_name):
-    choice = 0
     print()
     print(f'Привіт, {user_name}')
     print('-' * 20)
