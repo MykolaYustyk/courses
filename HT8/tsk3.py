@@ -29,7 +29,6 @@
 import json
 import datetime
 import csv
-import time
 
 def user_validation():
     result = [False, '']
@@ -39,9 +38,9 @@ def user_validation():
     while True and attemp <= 3:
         username = input("Введіть Ваше ім'я: ")
         password = input("Введіть Ваш пароль: ")
-        with open('users.csv', 'r', newline='') as csvfile:
+        with open('users.csv', 'r',  newline='') as csvfile:
             reader = csv.DictReader(csvfile)
-            dict_result = {row['user_name']: row['password'] for row in reader}
+            dict_result = {row['user_name'] : row['password'] for row in reader}
 
         if (username, password) in dict_result.items():
             result = [True, username]
@@ -59,15 +58,16 @@ def get_balance(user_name):
     with open(user_name + "_balance.txt", 'r') as file_balance:
         current_balance = file_balance.read()
         return current_balance
-    
+
 
 def print_balance(user_name):
-    return '\n'.join(['*' * 20,f'Ваш баланс: {get_balance(user_name)}','*' * 20])
+    return '\n'.join(['*' * 20, f'Ваш баланс: {get_balance(user_name)}', '*' * 20])
 
 
 def write_new_balance(user_name, current_balance):
     with open(f'{user_name}_balance.txt', 'w') as file_balance:
         file_balance.write(str(current_balance))
+    print('-' * 20)
     return f'Ваш новий баланc становить {current_balance}'
 
 
@@ -122,7 +122,7 @@ def get_money(user_name):
             append_transaction(user_name, f'-{sum_money}')
             break
         else:
-            print('Ви намагаєтесь зняти невалідну суму. Вона повинна бути додатньою і не більше ніж є у Вас на рахунку')
+            print('Ви намагаєтесь зняти невалідну суму. Вона повинна бути додатньою і небільше ніж є у Вас на рахунку')
             print('Введіть, будь ласка, іншу суму')
             print(f'У Вас ще {3 - attemp} спроби(a)')
             print()
@@ -156,7 +156,7 @@ def output_main_menu(user_name):
 
 def start():
     valid, input_user_name = user_validation()
-    while True:        
+    while True:
         if valid:
             choice_menu = output_main_menu(input_user_name)
             if choice_menu == 1:
