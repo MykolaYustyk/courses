@@ -30,6 +30,15 @@ import json
 import datetime
 import csv
 
+def my_decorator(function):
+    def wrapper(*args, **kwargs):
+        print('*' * 25)
+        result = function(*args, **kwargs)
+        print('*' * 25)
+        return result
+    return wrapper
+
+
 def user_validation():
     result = [False, '']
     attemp = 1
@@ -52,21 +61,19 @@ def user_validation():
     return result
 
 
+@my_decorator
 def get_balance(user_name):
     with open(user_name + "_balance.txt", 'r') as file_balance:
         current_balance = file_balance.read()
-        return current_balance
+        print(f'Ваш баланс: {current_balance}')
+    return current_balance
 
 
-def print_balance(user_name):
-    return '\n'.join(['*' * 20, f'Ваш баланс: {get_balance(user_name)}', '*' * 20])
-
-
-def write_new_balance(user_name, current_balance):
+@my_decorator
+def print_new_balance(user_name, current_balance):
     with open(f'{user_name}_balance.txt', 'w') as file_balance:
         file_balance.write(str(current_balance))
-    print('-' * 20)
-    return f'Ваш новий баланc становить {current_balance}'
+    print(f'Ваш новий баланc становить {current_balance}')
 
 
 def append_transaction(user_name, change_balance):
@@ -77,35 +84,25 @@ def append_transaction(user_name, change_balance):
 
 def add_balance(user_name):
     current_balance = int(get_balance(user_name))
-    print(print_balance(user_name))
     attemp = 1
-    while True and attemp <= 3:
-        while True:
-            add_money = input('На яку суму бажаєте поповнити свій баланс? ')
-            if add_money.isdigit():
-                add_money = int(add_money)
-                break
-            else:
-                print('Сума провинна бути числом. Повторіть ввод')
-        if add_money >= 0:
+    while True and attemp <= 3:      
+        add_money = input('На яку суму бажаєте поповнити свій баланс? ')
+        if add_money.isdigit():
+            add_money = int(add_money)       
             current_balance += int(add_money)
             append_transaction(user_name, f'+{add_money}')
             break
         else:
-            print("Ви намагаєтесь поповнити баланс від'ємною сумою")
+            print("Ви намагаєтесь поповнити баланс неприйнятними даними ")
             print('Введіть, будь ласка, іншу суму')
             print(f'У Вас ще {3 - attemp} спроби(a)')
-            print()
             attemp += 1
-    print()
-    print(write_new_balance(user_name, str(current_balance)))
-    print()
+    print_new_balance(user_name, str(current_balance))
     return
 
 
 def get_money(user_name):
     current_balance = int(get_balance(user_name))
-    print(print_balance(user_name))
     attemp = 1
     while True and attemp <= 3:
         while True:
@@ -120,14 +117,11 @@ def get_money(user_name):
             append_transaction(user_name, f'-{sum_money}')
             break
         else:
-            print('Ви намагаєтесь зняти невалідну суму. Вона повинна бути додатньою і небільше ніж є у Вас на рахунку')
+            print('Ви намагаєтесь зняти суму, яка більше ніж є у Вас на рахунку')
             print('Введіть, будь ласка, іншу суму')
             print(f'У Вас ще {3 - attemp} спроби(a)')
-            print()
             attemp += 1
-    print()
-    print(write_new_balance(user_name, str(current_balance)))
-    print()
+    print_new_balance(user_name, str(current_balance))
     return
 
 
@@ -141,7 +135,6 @@ def output_main_menu(user_name):
     print('3. Зняти кошти')
     print('4. Exit')
     print('-' * 20)
-    print()
     while True:
         choice = int(input('Ваш вибір: '))
         if choice in (1, 2, 3, 4):
@@ -157,7 +150,7 @@ def start():
         if valid:
             choice_menu = output_main_menu(input_user_name)
             if choice_menu == 1:
-                print(print_balance(input_user_name))
+                get_balance(input_user_name)
             elif choice_menu == 2:
                 add_balance(input_user_name)
             elif choice_menu == 3:

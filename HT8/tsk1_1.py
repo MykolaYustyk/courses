@@ -1,10 +1,9 @@
 import asyncio
 
 colors = {'Red': 'Green',
-               'Yellow': 'Red',
-               'Green': 'Red'
-             }
-
+          'Yellow': 'Red',
+          'Green': 'Red'
+         }
 
 async def change_color(i):
     color = ''
@@ -28,4 +27,3 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
-
