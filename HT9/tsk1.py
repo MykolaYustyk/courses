@@ -78,13 +78,29 @@ def user_registration():
     print()
     print('Рeєстрація:')
     print('-' * 20)
-    user_name = input('Name: ')
-    password = input('Password: ')
-    with sqlite3.connect('bankomat.db') as con:
-        cursor = con.cursor()
-        cursor.execute(f'INSERT INTO users VALUES(?, ?, ?)', (user_name, password, 0))
-        con.commit()
+    print('Логін і пароль повинні складатись із літер і цифр і мати довжину не меньше як 6 символів.')
+    while True:
+        while True:
+            user_name = input('Логін: ')
+            password = input('Пароль: ')
+            if len(user_name) >= 6 and user_name.isalnum() and not user_name.isdigit() and not user_name.isalpha()\
+               and len(password) >= 6 and password.isalnum() and not password.isdigit() and not password.isalpha():
+                break
+            else:
+                print('Ваш логін і/або пароль не відповідають вимогам.')
+                print('Повторіть ввод')
+        with sqlite3.connect('bankomat.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'SELECT user FROM users WHERE user = "{user_name}"')
+            if cursor.fetchone() is None:
+                cursor.execute(f'INSERT INTO users VALUES(?, ?, ?)', (user_name, password, 0))
+                con.commit()
+                break
+            else:
+                print('Користувач з таким логіном вже існує.')
+                print('Повторіть ввод')      
     return user_name
+
 
 @my_decorator
 def show_balance(user_name):
