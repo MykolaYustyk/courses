@@ -30,6 +30,7 @@ import json
 import datetime
 import csv
 
+
 def my_decorator(function):
     def wrapper(*args, **kwargs):
         print('*' * 25)
@@ -85,10 +86,10 @@ def append_transaction(user_name, change_balance):
 def add_balance(user_name):
     current_balance = int(get_balance(user_name))
     attemp = 1
-    while True and attemp <= 3:      
+    while True and attemp <= 3:
         add_money = input('На яку суму бажаєте поповнити свій баланс? ')
         if add_money.isdigit():
-            add_money = int(add_money)       
+            add_money = int(add_money)
             current_balance += int(add_money)
             append_transaction(user_name, f'+{add_money}')
             break
