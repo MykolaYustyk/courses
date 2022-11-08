@@ -38,19 +38,15 @@ def output_menu(menu):
         
 def get_choice(menu):
     while True:
-        while True:
-            choice = input('Ваш вибір: ')
-            if choice.isdigit():
-                choice = int(choice)
-                break
-            else:
-                print('Вибір повинен бути числом.')
-                print('Повторіть ввод.')
-                print()
-        if choice in range(1, len(menu) + 1):
+        choice = input('Ваш вибір: ')
+        if choice.isdigit() and int(choice) in range(1, len(menu) + 1):
+            choice = int(choice)
             break
         else:
-            print(f'Вибір повинен бути в межах від 1 до {len(menu)}')
+            print(f'Вибір повинен бути числом в межах від 1 до {len(menu)}')
+            print('Повторіть ввод.')
+            print()
+
     return choice
   
     
