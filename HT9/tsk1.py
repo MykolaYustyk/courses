@@ -16,7 +16,7 @@ import sqlite3
 import datetime
 
 menu_entrance = {1: 'Ввійти', 2: 'Зареєструватись', 3: 'Вихід'}
-menu_admin = {1: 'Переглянути баланс банкомата', 2: 'Додати кількість кюпюр', 3: 'Забрати кюпюри', 4: 'Вихід' }
+menu_admin = {1: 'Переглянути баланс банкомата', 2: 'Додати кількість кюпюр', 3: 'Вихід' }
 menu_user = {1: 'Переглянути баланс', 2: 'Поповнити баланс ', 3: 'Зняти кошти', 4: 'Вихід'}
 coins = {'10': 0, '20': 0, '50': 0, '100': 0, '200': 0, '500': 0, '1000': 0}
 
@@ -157,6 +157,8 @@ def get_money(user_name):
 def show_bank_balance():
     with sqlite3.connect('bankomat.db') as con:
         cursor = con.cursor()
+        for row in cursor.execute(f'SELECT * FROM coins'):
+            print(row[1], 'кюпюр номінала ', row[0])
         cursor.execute(f'SELECT * FROM coins')
         result = sum(coin * coin_count for coin, coin_count in cursor.fetchall())
         print(f'Баланс банкомата дорівнює: {result}')
@@ -170,7 +172,8 @@ def add_coins():
             current_count = int(input(f'Скільки купюр номіналом {current_coin[0]} додаєте? '))
             cursor.execute(f'UPDATE coins SET coin_count = {current_count} WHERE coin = {current_coin[0]}')
         con.commit()
-        print(f'Новий баланс банкомата становить {show_bank_balance()}')
+        show_bank_balance()
+
 
 def start():
     output_menu(menu_entrance)
@@ -199,8 +202,6 @@ def start():
                     elif admin_choice == 2:
                         add_coins()
                     elif admin_choice == 3:
-                        get_coins()
-                    elif admin_choice == 4:
                         break
         elif enter_choice == 2:
             current_user = user_registration()
