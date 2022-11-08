@@ -38,7 +38,15 @@ def output_menu(menu):
         
 def get_choice(menu):
     while True:
-        choice = int(input('Ваш вибір: '))
+        while True:
+            choice = input('Ваш вибір: ')
+            if choice.isdigit():
+                choice = int(choice)
+                break
+            else:
+                print('Вибір повинен бути числом.')
+                print('Повторіть ввод.')
+                print()
         if choice in range(1, len(menu) + 1):
             break
         else:
