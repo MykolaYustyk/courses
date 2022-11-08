@@ -110,7 +110,6 @@ def append_transaction(user_name, change_balance):
         con.commit()
 
 
-
 def add_balance(user_name):
     current_balance = show_balance(user_name)
     attemp = 1
@@ -118,6 +117,9 @@ def add_balance(user_name):
         add_money = input('На яку суму бажаєте поповнити свій баланс? ')
         if add_money.isdigit():
             add_money = int(add_money)
+            if add_money % 10 != 0:
+                print(f'Вам повертається {add_money % 10}')
+                add_money = add_money - (add_money % 10)                
             current_balance += int(add_money)
             append_transaction(user_name, f'+{add_money}')
             break
