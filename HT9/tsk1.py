@@ -176,14 +176,20 @@ def get_money(user_name):
     return
     
 
-def show_bank_balance():
+def get_bank_balance():
     with sqlite3.connect('bankomat.db') as con:
         cursor = con.cursor()
         for row in cursor.execute(f'SELECT * FROM coins'):
             print(row[1], 'кюпюр номінала ', row[0])
         cursor.execute(f'SELECT * FROM coins')
         result = sum(coin * coin_count for coin, coin_count in cursor.fetchall())
-        print(f'Баланс банкомата дорівнює: {result}')
+    return result
+
+
+@my_decorator
+def show_bank_balance():
+    result = get_bank_balance()
+    print(f'Баланс банкомата дорівнює: {result}')
 
 
 def add_coins():
