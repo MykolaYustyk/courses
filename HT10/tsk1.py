@@ -143,9 +143,11 @@ def show_bank_transaction_history():
         rows = cursor.fetchall()
         for row in rows:
             print(f"Користувач: {row[0]}")
+            print('-' * 30)
             cursor.execute(f"SELECT date, trans FROM user_trans WHERE user = '{row[0]}'")
             for row1 in cursor.fetchall():
-                print(row1[0], row1[1])
+                print(f'{row1[0]} | {row1[1]}')
+            print()
 
 
 def change_num_coins():
