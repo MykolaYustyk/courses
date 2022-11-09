@@ -58,7 +58,7 @@ def user_validation():
         password = input("Введіть Ваш пароль: ")
         with sqlite3.connect('bankomat.db') as con:
             cursor = con.cursor()            
-            dict_result  = {row[0]: row[1] for row in cursor.execute("SELECT user, password FROM users ")} 
+            dict_result = {row[0]: row[1] for row in cursor.execute("SELECT user, password FROM users ")}
         if (username, password) in dict_result.items():
             result = [True, username]
             break
@@ -199,7 +199,8 @@ def add_coins():
         for current_coin in cursor.fetchall():
             current_count = int(input(f'Скільки купюр номіналом {current_coin[0]} додаєте? '))
             coins_count_now = current_coin[1]
-            cursor.execute(f'UPDATE coins SET coin_count = {current_count + coins_count_now} WHERE coin = {current_coin[0]}')
+            cursor.execute(f'''UPDATE coins SET coin_count = {current_count + coins_count_now} 
+                               WHERE coin = {current_coin[0]}''')
         con.commit()
         show_bank_balance()
 
