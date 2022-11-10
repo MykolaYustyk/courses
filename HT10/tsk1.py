@@ -151,17 +151,73 @@ def show_bank_transaction_history():
             print('-' * 34)
 
 
+@my_decorator
+def show_bank_balance():
+    result = get_bank_balance()
+    print(f'Баланс банкомата дорівнює: {result}')
+
+
+def add_coins():
+    sum_of_coins = 0
+    with sqlite3.connect('bankomat.db') as con:
+        cursor = con.cursor()
+        cursor.execute(f'SELECT coin, coin_count FROM coins')
+        for current_coin in cursor.fetchall():
+            while True:
+                current_count = input(f'Скільки купюр номіналом {current_coin[0]} додаєте? ')
+                if current_count.isdigit():
+                    current_count = int(current_count)
+                    break
+                else:
+                    print('Кількість повинна бути числом')
+                    print('Повторіть ввод')
+            sum_of_coins += current_coin[0] * current_count
+            coins_count_now = current_coin[1]
+            cursor.execute(f'''UPDATE coins SET coin_count = {current_count + coins_count_now} 
+                               WHERE coin = {current_coin[0]}''')
+        con.commit()
+        show_bank_balance()
+        append_transaction('admin', f'+{sum_of_coins}')
+
+
+def get_coins():
+    sum_of_coins = 0
+    with sqlite3.connect('bankomat.db') as con:
+        cursor = con.cursor()
+        cursor.execute(f'SELECT coin, coin_count FROM coins')
+        for current_coin in cursor.fetchall():
+            while True:
+                while True:
+                    current_count = input(f'Скільки купюр номіналом {current_coin[0]} забираєте? ')
+                    if current_count.isdigit():
+                        current_count = int(current_count)
+                        break
+                    else:
+                        print('Кількість повинна бути числом')
+                        print('Повторіть ввод')
+                if current_count < current_coin[1]:
+                    break
+                else:
+                    print('Ви намагаєтесь знати більше кюпюр ніж є в банкоматі')
+                    print(f'Наразі їх номіналу {current_coin[0]} є {current_coin[1]}')
+                    print('Повторіть ввод')
+
+            sum_of_coins += current_coin[0] * current_count
+            coins_count_now = current_coin[1]
+            cursor.execute(f'''UPDATE coins SET coin_count = {coins_count_now-current_count} 
+                                   WHERE coin = {current_coin[0]}''')
+        con.commit()
+        show_bank_balance()
+        append_transaction('admin', f'- {sum_of_coins}')
+
 def change_num_coins():
     while True:
         output_menu(menu_change_coins)
         choice_menu = get_choice(menu_change_coins)
         if choice_menu == 1:
-            change_balance = add_coins()
-            append_transaction('admin', change_balance)
-
+            add_coins()
         elif choice_menu == 2:
-            change_balance = get_coins()
-            append_transaction(('admin', change_balance))
+            get_coins()
         elif choice_menu == 3:
             break
 
@@ -177,10 +233,6 @@ def get_bank_balance():
     return result
 
 
-@my_decorator
-def show_bank_balance():
-    result = get_bank_balance()
-    print(f'Баланс банкомата дорівнює: {result}')
 
 
 def get_money(user_name):
