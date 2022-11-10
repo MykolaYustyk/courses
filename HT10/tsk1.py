@@ -43,15 +43,15 @@ menu_user = {1: 'Переглянути баланс',
              5: 'До попереднього меню'
              }
 menu_user_admin = {1: 'Адміністратор', 2: 'Користувач', 3: 'Вихід в головне меню'}
-menu_change_coins = {1: 'Додати купюри', 2: 'Забрати купюри'}
+menu_change_coins = {1: 'Додати купюри', 2: 'Забрати купюри', 3: 'В попереднє меню'}
 coins = {'10': 0, '20': 0, '50': 0, '100': 0, '200': 0, '500': 0, '1000': 0}
 
 def my_decorator(function):
     def wrapper(*args, **kwargs):
         print()
-        print('-' * 25)
+        print('-' * 35)
         result = function(*args, **kwargs)
-        print('-' * 25)
+        print('-' * 35)
         return result
     return wrapper
 
@@ -132,7 +132,7 @@ def show_user_transaction_history(user_name):
         cursor.execute(f"SELECT date, trans FROM user_trans WHERE user = '{user_name}'")
         print(f'Історія транзакцій користувача {user_name}')
         for row in cursor.fetchall():
-            print(row[0], row[1])
+            print(f'| {row[0]} | {row[1].rjust(8)} |')
 
 
 def show_bank_transaction_history():
@@ -142,17 +142,29 @@ def show_bank_transaction_history():
         print('Історія транзакцій банкомата')
         rows = cursor.fetchall()
         for row in rows:
+            print('-' * 34)
             print(f"Користувач: {row[0]}")
-            print('-' * 30)
+            print('-' * 34)
             cursor.execute(f"SELECT date, trans FROM user_trans WHERE user = '{row[0]}'")
             for row1 in cursor.fetchall():
-                print(f'{row1[0]} | {row1[1]}')
-            print()
+                print(f'| {row1[0]} | {row1[1].rjust(8)}|')
+            print('-' * 34)
 
 
 def change_num_coins():
-    output_menu(menu_change_coins)
-    get_choice(menu_change_coins)
+    while True:
+        output_menu(menu_change_coins)
+        choice_menu = get_choice(menu_change_coins)
+        if choice_menu == 1:
+            change_balance = add_coins()
+            append_transaction('admin', change_balance)
+
+        elif choice_menu == 2:
+            change_balance = get_coins()
+            append_transaction(('admin', change_balance))
+        elif choice_menu == 3:
+            break
+
 
 
 def get_bank_balance():
