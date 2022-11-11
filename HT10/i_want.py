@@ -14,11 +14,9 @@ def collect(amount, nominals):
     number_of_notes = min(avaible_notes, notes_needed)
    
     for i in range(number_of_notes, -1, -1):
-        nominals = nominals[1:]    
-        result = collect(amount - i * current_nominal, nominals)
-    
+        result = collect(amount - i * current_nominal, nominals[1:])    
         if result is not None:
-            if number_of_notes:
+            if i:
                 result[current_nominal] = number_of_notes
             return result      
     
