@@ -1,6 +1,6 @@
 import math
 
-limits = {1000:4, 500: 1, 200:4, 100: 0, 50: 1, 20: 1, 10: 5}
+limits = {1000:10, 500: 10, 200:10, 100: 10, 50: 10, 20: 10, 10: 10}
 
 def collect(amount, nominals):
     if amount == 0 :
@@ -27,4 +27,4 @@ def i_want_to_get(amount_required, limits):
     nominals = sorted(limits.keys(), reverse=1)
     return collect(amount_required, nominals)
     
-print(i_want_to_get(1170, limits))
+print(i_want_to_get(260, limits))
