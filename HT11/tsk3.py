@@ -8,7 +8,8 @@ import math
 
 start_menu_list = ['Вхід', 'Реєстрація', 'Вихід']
 user_menu_list = ['Переглянути баланс', 'Поповнити баланс ', 'Зняти кошти', 'Історія транзакцій', 'До головного меню']
-admin_menu_list = ['Переглянути баланс банкомата','Змінити кількість кюпюр','Історія транзакцій банкомата']
+admin_menu_list = ['Переглянути баланс банкомата', 'Змінити кількість кюпюр', 'Історія транзакцій банкомата']
+
 
 def my_decorator(function):
     def wrapper(*args, **kwargs):
@@ -17,12 +18,13 @@ def my_decorator(function):
         result = function(*args, **kwargs)
         print('-' * 35)
         return result
+
     return wrapper
 
 
 class User:
     balance = 0
-    
+
     def __init__(self, name, password):
         self.name = name
         self.password = password
@@ -36,17 +38,15 @@ class User:
             print(f'Ваш баланс дорівнює {result}')
         return result
 
-
     @my_decorator
     def print_new_balance(self, current_balance):
-                
+
         with sqlite3.connect('bankomat.db') as con:
             cursor = con.cursor()
             cursor.execute(f"UPDATE users SET ballance = {current_balance} WHERE user = '{self.name}'")
             con.commit()
         print(f'Ваш новий баланc становить {current_balance}')
-        
-        
+
     def append_transaction(self, change_balance):
         now = datetime.datetime.now()
         now = now.strftime(" %d.%m.%Y %X")
@@ -54,8 +54,7 @@ class User:
             cursor = con.cursor()
             cursor.execute(f"INSERT INTO user_trans VALUES(?, ?, ?)", (self.name, now, change_balance))
             con.commit()
-            
-            
+
     def add_balance(self):
         current_balance = self.show_balance()
         attemp = 1
@@ -76,8 +75,7 @@ class User:
                 attemp += 1
         self.print_new_balance(current_balance)
         return
-    
-    
+
     def get_money(self):
         current_balance = self.show_balance()
         attemp = 1
@@ -105,28 +103,34 @@ class User:
             for row in cursor.fetchall():
                 print(f'| {row[0]} | {row[1].rjust(8)} |')
 
+
+class Admin(User):
+
+    def __init__(self):
+        super().__init__('admin', 'admin')
+
+
 class Menu:
-    
+
     def __init__(self, list_menu):
         self.list_menu = list_menu
-
 
     @my_decorator
     def show(self):
         for i, val in enumerate(self.list_menu, 1):
             print(f'{i}. {val}')
-            
-        
+
     def get_choice(self):
-        while True:      
+        while True:
             current_choice = input('Ваш вибір: ')
             if current_choice.isdigit() and 1 <= int(current_choice) <= len(self.list_menu):
                 break
             else:
                 print(f'Вибір повинен бути в межах від 1 до {len(self.list_menu)}')
                 print('Повторіть ввод.')
-                
-        return int(current_choice)  
+
+        return int(current_choice)
+
 
 start_menu = Menu(start_menu_list)
 user_menu = Menu(user_menu_list)
@@ -140,7 +144,7 @@ def user_validation():
         username = input("Введіть Ваше ім'я: ")
         password = input("Введіть Ваш пароль: ")
         with sqlite3.connect('bankomat.db') as con:
-            cursor = con.cursor()            
+            cursor = con.cursor()
             cursor.execute("SELECT user, password FROM users ")
         if (username, password) in cursor.fetchall():
             result = (True, username, password)
@@ -173,7 +177,7 @@ def user_routine(current_user):
             break
 
 
-def admin_routine(user):
+def admin_routine():
     while True:
         admin_menu.show()
         choice = admin_menu.get_choice()
@@ -191,13 +195,13 @@ def admin_routine(user):
         elif choice == 6:
             admin.get_money()
         elif choice == 7:
-            admin.show_balance_history()
+            admin.show_user_transaction_history()
         elif choice == 8:
             break
 
 
 def start():
-    while True:    
+    while True:
         start_menu.show()
         choice = start_menu.get_choice()
         if choice == 1:
@@ -206,12 +210,12 @@ def start():
             if valid and user != 'admin':
                 user_routine(current_user)
             if valid and user == 'admin':
-                admin_routine(current_user)
+                admin_routine()
         elif choice == 2:
             print('User registration')
         elif choice == 3:
             break
-    
+
 
 if __name__ == "__main__":
     start()
