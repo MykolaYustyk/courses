@@ -1,6 +1,6 @@
 import math
 
-limits = {1000: 5, 500: 1, 200:4, 100: 1, 50: 4, 20: 6, 10: 0}
+limits = {1000: 5, 500: 1, 200:4, 100: 0, 50: 1, 20: 1, 10: 5}
 
 def collect(amount, nominals):
     if amount == 0 :
