@@ -166,7 +166,7 @@ def user_routine(current_user):
         elif choice == 2:
             current_user.add_balance()
         elif choice == 3:
-            get_money(user)
+            current_user.get_money()
         elif choice == 4:
             current_user.show_user_transaction_history()
         elif choice == 5:
@@ -177,14 +177,21 @@ def admin_routine(user):
     while True:
         admin_menu.show()
         choice = admin_menu.get_choice()
+        admin = Admin()
         if choice == 1:
-            do_admin_operations()
+            admin.show_bank_balance()
         elif choice == 2:
-            user_routine(user)
+            admin.coins_operations()
         elif choice == 3:
-            print()
+            admin.show_bank_transaction_history()
+        elif choice == 4:
+            admin.show_balance()
+        elif choice == 5:
+            admin.add_balance()
+        elif choice == 6:
+            admin.get_money()
         elif choice == 7:
-
+            admin.show_balance_history()
         elif choice == 8:
             break
 
