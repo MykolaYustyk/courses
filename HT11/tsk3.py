@@ -9,6 +9,7 @@ import math
 start_menu_list = ['Вхід', 'Реєстрація', 'Вихід']
 user_menu_list = ['Переглянути баланс', 'Поповнити баланс ', 'Зняти кошти', 'Історія транзакцій', 'До головного меню']
 admin_menu_list = ['Переглянути баланс банкомата', 'Змінити кількість кюпюр', 'Історія транзакцій банкомата']
+change_coins_menu_list = ['Додати купюри', 'Забрати купюри', 'В попереднє меню']
 
 
 def my_decorator(function):
@@ -24,6 +25,7 @@ def my_decorator(function):
 
 class User:
     balance = 0
+    first_time = False
 
     def __init__(self, name, password):
         self.name = name
@@ -66,6 +68,10 @@ class User:
                     print(f'Вам повертається {add_money % 10}')
                     add_money = add_money - (add_money % 10)
                 current_balance += int(add_money)
+                if self.first_time:
+                    current_balance *= 1.1
+                    print('Вам як новому користувачеві нараховано бонус на перший внесок')
+                    self.first_time = False
                 self.append_transaction(f'+{add_money}')
                 break
             else:
@@ -81,7 +87,7 @@ class User:
         attemp = 1
         while True and attemp <= 3:
             sum_money = input('Яку суму бажаєте зняти? ')
-            if sum_money.isdigit() and (0 <= int(sum_money) <= current_balance or sum_money <= get_bank_balance()):
+            if sum_money.isdigit() and (0 <= int(sum_money) <= current_balance or sum_money <= self.get_bank_balance()):
                 sum_money = int(sum_money)
                 current_balance -= sum_money
                 self.append_transaction(f'-{sum_money}')
@@ -103,11 +109,105 @@ class User:
             for row in cursor.fetchall():
                 print(f'| {row[0]} | {row[1].rjust(8)} |')
 
+    @staticmethod
+    def get_bank_balance():
+        with sqlite3.connect('bankomat.db') as con:
+            cursor = con.cursor()
+            for row in cursor.execute(f'SELECT * FROM coins'):
+                print(row[1], 'кюпюр номінала ', row[0])
+            cursor.execute(f'SELECT * FROM coins')
+            result = sum(coin * coin_count for coin, coin_count in cursor.fetchall())
+        return result
+
+    @my_decorator
+    def show_bank_balance(self):
+        result = self.get_bank_balance()
+        print(f'Баланс банкомата дорівнює: {result}')
+
 
 class Admin(User):
 
     def __init__(self):
         super().__init__('admin', 'admin')
+
+    @staticmethod
+    @my_decorator
+    def show_bank_transaction_history():
+        with sqlite3.connect('bankomat.db') as con:
+            cursor = con.cursor()
+            cursor.execute("SELECT user from users")
+            print('Історія транзакцій банкомата')
+            rows = cursor.fetchall()
+            for row in rows:
+                print('-' * 34)
+                print(f"Користувач: {row[0]}")
+                print('-' * 34)
+                cursor.execute(f"SELECT date, trans FROM user_trans WHERE user = '{row[0]}'")
+                for row1 in cursor.fetchall():
+                    print(f'| {row1[0]} | {row1[1].rjust(8)}|')
+
+    def coins_operations(self):
+        while True:
+            change_coins_menu.show()
+            choice_menu = change_coins_menu.get_choice()
+            if choice_menu == 1:
+                self.add_coins()
+            elif choice_menu == 2:
+                self.get_coins()
+            elif choice_menu == 3:
+                break
+
+    def add_coins(self):
+        sum_of_coins = 0
+        with sqlite3.connect('bankomat.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'SELECT coin, coin_count FROM coins')
+            for current_coin in cursor.fetchall():
+                while True:
+                    current_count = input(f'Скільки купюр номіналом {current_coin[0]} додаєте? ')
+                    if current_count.isdigit():
+                        current_count = int(current_count)
+                        break
+                    else:
+                        print('Кількість повинна бути числом')
+                        print('Повторіть ввод')
+                sum_of_coins += current_coin[0] * current_count
+                coins_count_now = current_coin[1]
+                cursor.execute(f'''UPDATE coins SET coin_count = {current_count + coins_count_now} 
+                                       WHERE coin = {current_coin[0]}''')
+            con.commit()
+            self.show_bank_balance()
+            self.append_transaction(f'+{sum_of_coins}')
+
+    def get_coins(self):
+        sum_of_coins = 0
+        with sqlite3.connect('bankomat.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'SELECT coin, coin_count FROM coins')
+            for current_coin in cursor.fetchall():
+                while True:
+                    while True:
+                        current_count = input(f'Скільки купюр номіналом {current_coin[0]} забираєте? ')
+                        if current_count.isdigit():
+                            current_count = int(current_count)
+                            break
+                        else:
+                            print('Кількість повинна бути числом')
+                            print('Повторіть ввод')
+                    if current_count < current_coin[1]:
+                        break
+                    else:
+                        print('Ви намагаєтесь знати більше кюпюр ніж є в банкоматі')
+                        print(f'Наразі їх номіналу {current_coin[0]} є {current_coin[1]}')
+                        print('Повторіть ввод')
+
+                sum_of_coins += current_coin[0] * current_count
+                coins_count_now = current_coin[1]
+                cursor.execute(f'''UPDATE coins SET coin_count = {coins_count_now - current_count} 
+                                           WHERE coin = {current_coin[0]}''')
+            con.commit()
+            self.show_bank_balance()
+            self.append_transaction(f'- {sum_of_coins}')
 
 
 class Menu:
@@ -135,6 +235,7 @@ class Menu:
 start_menu = Menu(start_menu_list)
 user_menu = Menu(user_menu_list)
 admin_menu = Menu(admin_menu_list + user_menu_list)
+change_coins_menu = Menu(change_coins_menu_list)
 
 
 def user_validation():
@@ -159,6 +260,35 @@ def user_validation():
                 print('Пройдіть реєстрацію')
                 start()
     return result
+
+
+def user_registration():
+    print()
+    print('Рeєстрація:')
+    print('-' * 20)
+    print('Логін і пароль повинні складатись із літер і цифр і мати довжину не меньше як 6 символів.')
+    while True:
+        while True:
+            user_name = input('Логін: ')
+            password = input('Пароль: ')
+            if len(user_name) >= 6 and user_name.isalnum() and not user_name.isdigit() and not user_name.isalpha() \
+                    and len(password) >= 6 and password.isalnum() and not password.isdigit() and not password.isalpha():
+                new_user = User(user_name, password)
+                break
+            else:
+                print('Ваш логін і/або пароль не відповідають вимогам.')
+                print('Повторіть ввод')
+        with sqlite3.connect('bankomat.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'SELECT user FROM users WHERE user = "{new_user.name}"')
+            if cursor.fetchone() is None:
+                cursor.execute(f'INSERT INTO users VALUES(?, ?, ?)', (new_user.name, new_user.password, 0))
+                con.commit()
+                break
+            else:
+                print('Користувач з таким логіном вже існує.')
+                print('Повторіть ввод')
+    return (new_user.name, new_user.password)
 
 
 def user_routine(current_user):
@@ -212,7 +342,10 @@ def start():
             if valid and user == 'admin':
                 admin_routine()
         elif choice == 2:
-            print('User registration')
+            user, password = user_registration()
+            current_user = User(user, password)
+            current_user.first_time = True
+            user_routine(current_user)
         elif choice == 3:
             break
 

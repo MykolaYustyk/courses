@@ -24,7 +24,7 @@
 '''
 import sqlite3
 import datetime
-import math
+from i_want import i_want_to_get
 
 
 main_menu = {1: 'Ввійти',
@@ -135,6 +135,7 @@ def show_user_transaction_history(user_name):
             print(f'| {row[0]} | {row[1].rjust(8)} |')
 
 
+@my_decorator
 def show_bank_transaction_history():
     with sqlite3.connect('bankomat.db') as con:
         cursor = con.cursor()
@@ -209,6 +210,7 @@ def get_coins():
         con.commit()
         show_bank_balance()
         append_transaction('admin', f'- {sum_of_coins}')
+        
 
 def change_num_coins():
     while True:
@@ -233,21 +235,41 @@ def get_bank_balance():
     return result
 
 
-
-
 def get_money(user_name):
+    dict_of_notes = {}
     current_balance = show_balance(user_name)
     attemp = 1
     while True and attemp <= 3:
-        sum_money = input('Яку суму бажаєте зняти? ')
-        if sum_money.isdigit() and (0 <= int(sum_money) <= current_balance or sum_money <= get_bank_balance()):
-            sum_money = int(sum_money)
+        while True:
+            sum_money = input('Яку суму бажаєте зняти? ')
+            if sum_money.isdigit() and 0 <= int(sum_money) <= current_balance:
+                sum_money = int(sum_money)                
+                break
+            else:
+                print('Ви намагаєтесь зняти суму, яка більше, ніж є у Вас на рахунку.')
+                print('Введіть, будь ласка, іншу суму')
+                
+        with sqlite3.connect('bankomat.db') as con:
+            cursor = con.cursor()
+            for row in cursor.execute(f'SELECT * FROM coins'):
+                dict_of_notes[row[0]] = row[1]
+        result = i_want_to_get(sum_money, dict_of_notes)
+        if result:
+            print(result)
+            with sqlite3.connect('bankomat.db') as con:
+                cursor = con.cursor()
+                cursor.execute(f'SELECT * FROM coins')
+                for current_coin in cursor.fetchall():
+                    for key, val in result.items():
+                        cursor.execute(f'''UPDATE coins SET coin_count = {current_coin[1]-val} 
+                                               WHERE coin = {key}''')
+                con.commit()     
             current_balance -= sum_money
             append_transaction(user_name, f'-{sum_money}')
             break
         else:
-            print('Ви намагаєтесь зняти суму, яка більше, ніж є у Вас на рахунку або більше ніж є в банкоматі')
-            print('Введіть, будь ласка, іншу суму')
+            print('Нажаль банкомат не може видати зазначену вами суму')
+            print('Повторіть ввод')              
             print(f'У Вас ще {3 - attemp} спроби(a)')
             attemp += 1
     print_new_balance(user_name, str(current_balance))
