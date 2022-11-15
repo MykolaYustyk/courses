@@ -4,7 +4,7 @@
 '''
 import sqlite3
 import datetime
-import math
+from i_want import i_want_to_get
 
 start_menu_list = ['Вхід', 'Реєстрація', 'Вихід']
 user_menu_list = ['Переглянути баланс', 'Поповнити баланс ', 'Зняти кошти', 'Історія транзакцій', 'До головного меню']
@@ -84,17 +84,39 @@ class User:
 
     def get_money(self):
         current_balance = self.show_balance()
+        dict_of_notes = {}
         attemp = 1
         while True and attemp <= 3:
-            sum_money = input('Яку суму бажаєте зняти? ')
-            if sum_money.isdigit() and (0 <= int(sum_money) <= current_balance or sum_money <= self.get_bank_balance()):
-                sum_money = int(sum_money)
+            while True:
+                sum_money = input('Яку суму бажаєте зняти? ')
+                if sum_money.isdigit() and 0 <= int(sum_money) <= current_balance:
+                    sum_money = int(sum_money)
+                    break
+                else:
+                    print('Ви намагаєтесь зняти суму, яка більше, ніж є у Вас на рахунку.')
+                    print('Введіть, будь ласка, іншу суму')
+
+            with sqlite3.connect('bankomat.db') as con:
+                cursor = con.cursor()
+                for row in cursor.execute(f'SELECT * FROM coins'):
+                    dict_of_notes[row[0]] = row[1]
+            result = i_want_to_get(sum_money, dict_of_notes)
+            if result:
+                print(result)
+                with sqlite3.connect('bankomat.db') as con:
+                    cursor = con.cursor()
+                    cursor.execute(f'SELECT * FROM coins')
+                    for current_coin in cursor.fetchall():
+                        for key, val in result.items():
+                            cursor.execute(f'''UPDATE coins SET coin_count = {current_coin[1] - val} 
+                                                       WHERE coin = {key}''')
+                    con.commit()
                 current_balance -= sum_money
                 self.append_transaction(f'-{sum_money}')
                 break
             else:
-                print('Ви намагаєтесь зняти суму, яка більше, ніж є у Вас на рахунку або більше ніж є в банкоматі')
-                print('Введіть, будь ласка, іншу суму')
+                print('Нажаль банкомат не може видати зазначену вами суму')
+                print('Повторіть ввод')
                 print(f'У Вас ще {3 - attemp} спроби(a)')
                 attemp += 1
         self.print_new_balance(str(current_balance))
