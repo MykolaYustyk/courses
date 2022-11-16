@@ -155,6 +155,10 @@ def show_bank_transaction_history():
 @my_decorator
 def show_bank_balance():
     result = get_bank_balance()
+    with sqlite3.connect('bankomat.db') as con:
+        cursor = con.cursor()
+        for row in cursor.execute(f'SELECT * FROM coins'):
+            print(row[1], 'кюпюр номінала ', row[0])
     print(f'Баланс банкомата дорівнює: {result}')
 
 
@@ -228,8 +232,6 @@ def change_num_coins():
 def get_bank_balance():
     with sqlite3.connect('bankomat.db') as con:
         cursor = con.cursor()
-        for row in cursor.execute(f'SELECT * FROM coins'):
-            print(row[1], 'кюпюр номінала ', row[0])
         cursor.execute(f'SELECT * FROM coins')
         result = sum(coin * coin_count for coin, coin_count in cursor.fetchall())
     return result
@@ -242,11 +244,11 @@ def get_money(user_name):
     while True and attemp <= 3:
         while True:
             sum_money = input('Яку суму бажаєте зняти? ')
-            if sum_money.isdigit() and 0 <= int(sum_money) <= current_balance:
+            if sum_money.isdigit() and (0 <= int(sum_money) <= current_balance or int(sum_money) <= get_bank_balance()):
                 sum_money = int(sum_money)                
                 break
             else:
-                print('Ви намагаєтесь зняти суму, яка більше, ніж є у Вас на рахунку.')
+                print('Ви намагаєтесь зняти суму, яка більше, ніж є у Вас на рахункую')
                 print('Введіть, будь ласка, іншу суму')
                 
         with sqlite3.connect('bankomat.db') as con:

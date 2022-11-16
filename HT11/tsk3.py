@@ -89,7 +89,7 @@ class User:
         while True and attemp <= 3:
             while True:
                 sum_money = input('Яку суму бажаєте зняти? ')
-                if sum_money.isdigit() and 0 <= int(sum_money) <= current_balance:
+                if sum_money.isdigit() and (0 <= int(sum_money) <= current_balance or int(sum_money) < self.get_bank_balance()):
                     sum_money = int(sum_money)
                     break
                 else:
