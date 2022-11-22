@@ -76,12 +76,12 @@ class Author(Person):
         
 class Book(Author):
     count = 0
-    avail = True
     
-    def __init__(self, name='', title='', publish_year=0):
+    def __init__(self, name='', title='', publish_year=0,avail=1):
         super().__init__(name)
         self.title = title
-        self.publish_year = publish_year        
+        self.publish_year = publish_year 
+        self.avail = avail       
         self.__class__.count = self.add_count()
         
 
@@ -99,30 +99,55 @@ class Book(Author):
         return self.avail
         
     @my_decorator
-    def show_information(title):
+    def show_information(self):
         with sqlite3.connect('library.db') as con:
             cursor = con.cursor()
-            cursor.execute(f'SELECT * FROM books WHERE title = ?', (title,))
-            if cursor.fetchone() is not None: 
-                current_book = cursor.fetchone()           
-                print(
-                    f'Інформація про книгу \n'
+            cursor.execute(f'SELECT * FROM books WHERE title = ?', (self.title,))
+            current_book = cursor.fetchone()
+            print(  f'Інформація про книгу \n'
                     f'{"-" * 35}\n'
                     f'Автор: {current_book[0]}\n'
                     f'Назва: {current_book[1]}\n'
                     f'Рік видання: {current_book[2]}\n'
                     f'Наявність: {current_book[3]}'
                 )
+            
+    
+    def add_new_book(self):
+        with sqlite3.connect('library.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'INSERT INTO books VALUES(?, ?, ?, ?)', (self.name, self.title, self.publish_year,self.avail))
+            con.commit()
+        print('Нову книгу додано')   
         
+        
+    def get_book(self):
+        with sqlite3.connect('library.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'UPDATE books SET avail = ? WHERE title =?', (0, self.title))
+            con.commit()
+        print(f'Книгу {self.title} взято')    
+            
+
+    def return_book(self):
+        with sqlite3.connect('library.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'UPDATE books SET avail = ? WHERE title = ?', (1, self.title))
+            con.commit()
+        print(f'Книгу {self.title} повернули')        
+        
+             
 class Menu:
 
     def __init__(self, list_menu):
         self.list_menu = list_menu
+        
 
     @my_decorator
     def show(self):
         for i, val in enumerate(self.list_menu, 1):
             print(f'{i}. {val}')
+            
 
     def get_choice(self):
         while True:
@@ -158,15 +183,26 @@ def get_title():
         current_title = input('Введіть назву книги: ')
         with sqlite3.connect('library.db') as con:
             cursor = con.cursor()
-            cursor.execute(f'SELECT * FROM readers WHERE title = ?', (current_title,))
-            if cursor.fetchone() is None:
+            cursor.execute(f'SELECT * FROM books WHERE title = ?', (current_title,))
+            result = cursor.fetchone()
+            if result[1] == current_title:
+                result = Book(*result)      
+                break
+            else:
                 print('Книжки з такою назвою не знайдено')
                 print('Повторіть ввод')
-            else:
-                break
-    return current_title
+    return result
         
+  
+def get_new_book():
+    print('Додаєм нову книгу')
+    new_book_author = input("Введіть прізвище і ім'я автора: ")
+    new_book_title = input('Введіть назву книжки: ')
+    new_book_publish_year = input('Рік видання:')
+    new_book = Book(new_book_author, new_book_title, new_book_publish_year, 1)
+    return new_book
     
+   
 def reader_routine():
     while True:
         reader_menu.show()
@@ -192,17 +228,17 @@ def books_routine():
         book_menu.show()
         choice = book_menu.get_choice()
         if choice == 1:
-            book = Book(get_title())
+            book = get_title()
             book.show_information()
         elif choice == 2:
-            book = Book()
+            book = get_new_book()
             book.add_new_book()
         elif choice == 3:
-            book = Book(get_title())
+            book = get_title()
             book.get_book()
         elif choice == 4:
-            book = Book(get_title())
-            book.rerurn_book()
+            book = get_title()
+            book.return_book()
         elif choice == 5:
             break                 
             
