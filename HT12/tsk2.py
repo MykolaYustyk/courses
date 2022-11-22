@@ -22,10 +22,7 @@ def my_decorator(function):
 class Person:       
     def __init__(self, name=''):
         self.name = name
-    
-        
-    
-    
+   
               
 class Reader(Person):  
     def __init__(self, name=''):
@@ -47,10 +44,11 @@ class Reader(Person):
             new_reader = Reader(current_name)  
             with sqlite3.connect('library.db') as con:
                 cursor = con.cursor()
-                cursor.execute(f'SELECT * FROM readers WHERE name = "{current_name}"')
+                cursor.execute(f'SELECT * FROM readers WHERE name == ?',(current_name,))
                 if cursor.fetchone() is None:
                     cursor.execute(f'INSERT INTO readers VALUES("{new_reader.name}")')
                     con.commit()
+                    print(f'Читача {new_reader.name} успішно додано')
                     break
                 else:
                     print('Такий читач вже зареєстрований.')
@@ -101,15 +99,20 @@ class Book(Author):
         return self.avail
         
     @my_decorator
-    def show_information(self):
-        print(
-            f'Інформація про книгу \n'
-            f'{"-" * 35}\n'
-            f'Автор: {self.name}\n'
-            f'Назва: {self.title}\n'
-            f'Рік видання: {self.publish_year}\n'
-            f'Наявність: {self.avail}'
-        )
+    def show_information(title):
+        with sqlite3.connect('library.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'SELECT * FROM books WHERE title = ?', (title,))
+            if cursor.fetchone() is not None: 
+                current_book = cursor.fetchone()           
+                print(
+                    f'Інформація про книгу \n'
+                    f'{"-" * 35}\n'
+                    f'Автор: {current_book[0]}\n'
+                    f'Назва: {current_book[1]}\n'
+                    f'Рік видання: {current_book[2]}\n'
+                    f'Наявність: {current_book[3]}'
+                )
         
 class Menu:
 
@@ -137,11 +140,11 @@ reader_menu = Menu(reader_menu_list)
 book_menu = Menu(book_menu_list)
 
 def get_name():
-     while True:
+    while True:
         current_name = input('Введіть прізвище i im\'я: ')          
         with sqlite3.connect('library.db') as con:
             cursor = con.cursor()
-            cursor.execute(f'SELECT * FROM readers WHERE name = "{current_name}"')
+            cursor.execute(f'SELECT * FROM readers WHERE name = ?', (current_name,))
             if cursor.fetchone() is None:
                 print("Читача з такими даними в базі даних немає ")
                 print('Повторіть ввод')
@@ -151,6 +154,18 @@ def get_name():
         
 
 def get_title():
+    while True:
+        current_title = input('Введіть назву книги: ')
+        with sqlite3.connect('library.db') as con:
+            cursor = con.cursor()
+            cursor.execute(f'SELECT * FROM readers WHERE title = ?', (current_title,))
+            if cursor.fetchone() is None:
+                print('Книжки з такою назвою не знайдено')
+                print('Повторіть ввод')
+            else:
+                break
+    return current_title
+        
     
 def reader_routine():
     while True:
@@ -187,7 +202,7 @@ def books_routine():
             book.get_book()
         elif choice == 4:
             book = Book(get_title())
-            rerurn_book()
+            book.rerurn_book()
         elif choice == 5:
             break                 
             
