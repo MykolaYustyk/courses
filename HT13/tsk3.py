@@ -23,21 +23,17 @@ class Transaction:
     def amount(self):
         return self._amount
     
-    
     @property
     def date(self):
-        return self._date
-    
+        return self._date    
     
     @property
     def currency(self):
-        return self._currency
-    
+        return self._currency    
     
     @property
     def usd_conversation_rate(self):
-        return self._usd_conversation_rate
-    
+        return self._usd_conversation_rate    
     
     @property
     def discription(self):
@@ -48,7 +44,10 @@ class Transaction:
         
     @property
     def usd(self):
-        return self._amount * 1 / self.usd_conversation_rate
+        if self.currency == "USD":
+            return self.amount
+        else:
+            return self.amount * 1 / self.usd_conversation_rate
     
 if __name__ == "__main__":
     trans1 = Transaction(200, '24.11.2022', "UAH", 37)
