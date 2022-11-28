@@ -6,12 +6,10 @@
 class MyList:
     
     def __init__(self, *args):
-        self.items = list(args)
-        
+        self.items = list(args)        
         
     def __len__(self):
-        return len(self.items)
-        
+        return len(self.items)        
     
     def __getitem__(self, item):
         if 0 < item < len(self.items): 
@@ -19,12 +17,10 @@ class MyList:
         elif -len(self.items) < item < 0:
             return self.items[item]
         else:
-            raise IndexError('Індекс за межами списку')
-        
+            raise IndexError('Індекс за межами списку')        
     
     def __repr__(self):
-        return str(self.items)
-    
+        return str(self.items)    
     
     def __setitem__(self, item, value):
         if 0 < item < len(self.items): 
@@ -32,8 +28,7 @@ class MyList:
         elif -len(self.items) < item < 0:
             self.items[item] = value
         else:
-            raise IndexError('Індекс за межами списку')
-        
+            raise IndexError('Індекс за межами списку')        
         
     def __delitem__(self, item):
         if 0 < item < len(self.items):            
@@ -41,16 +36,13 @@ class MyList:
         elif -len(self.items) < item < 0:
             del(self.items[item])
         else:
-            raise IndexError('Індекс за межами списку')
-        
+            raise IndexError('Індекс за межами списку')        
         
     def append(self, item):
-        return self.items.append(item)
-    
+        return self.items.append(item)    
     
     def extend(self, *items):
-        return self.items.extend(items)
-    
+        return self.items.extend(items)    
     
     def pop(self, item=None):
         if item is None:
@@ -63,24 +55,19 @@ class MyList:
         return self.items.clear()
     
     def count(self, value):
-        return self.items.count(value)
-    
+        return self.items.count(value)    
     
     def index(self, value):
-        return self.items.index(value) + 1
-    
+        return self.items.index(value) + 1    
     
     def insert(self, item, value):
-        return self.items.insert(item - 1, value)
-    
+        return self.items.insert(item - 1, value)    
     
     def remove(self, value):
         return self.items.remove(value)
-
     
     def reverse(self):
-        return self.items.reverse()
-    
+        return self.items.reverse()    
     
     def sort(self, reverse=None):
         if reverse is None:
@@ -88,12 +75,10 @@ class MyList:
         else:
             reverse = True               
         self.items = list(map(str, self.items))
-        return self.items.sort(reverse=reverse)  
-    
+        return self.items.sort(reverse=reverse)     
     
     def __add__(self, other):
-        return self.items + other.items 
-    
+        return self.items + other.items     
   
 if __name__ == "__main__":   
     list1 = MyList(100, 200, 300, 400, 5, 'abracadabra')

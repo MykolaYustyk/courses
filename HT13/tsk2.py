@@ -18,22 +18,19 @@
 +────+────+────+
 '''
 
-class Matrix:
-    
+class Matrix:    
     
     def __init__(self, rows, columns):
         self.rows = rows
         self.columns = columns
-        self.array_of_matrix = [[0 for i in range(self.columns)] for j in range(self.rows)]
-    
+        self.array_of_matrix = [[0 for i in range(self.columns)] for j in range(self.rows)]    
         
     def fill(self):
         i = 1
         for row in range(self.rows):
             for column in range(self.columns):
                 self.array_of_matrix[row][column]= i
-                i += 1
-                
+                i += 1                
     
     def print_out(self):
         for i in range(self.rows):
@@ -47,7 +44,6 @@ class Matrix:
             for j in range(self.rows):
                 print(transpose_matrix[i][j], end=' ')
             print()
-
 
 if __name__ == "__main__":   
     matrix1 = Matrix(3,2)

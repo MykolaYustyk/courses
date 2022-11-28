@@ -6,12 +6,10 @@
 
 class Car():
     def __init__(self, year):
-        self.year = year
-    
+        self.year = year    
     
     def __gt__(self, other):
-        return self.year < other.year
-    
+        return self.year < other.year    
     
     def __sub__(self, other):
         return other.year - self.year
