@@ -11,6 +11,7 @@ import requests
 
 list_of_valutes = ('USD', "GBP", 'CAD', "PLZ", 'SEK', "XAU")
 
+
 def check_the_zloty(date, currency):
     change_day = datetime.strptime('01.11.2017', "%d.%m.%Y")
     if date >= change_day and currency == 'PLZ':
@@ -44,8 +45,10 @@ def main():
         print(f'{current_date}')
         for dict_val in response.json()["exchangeRate"]:
             if dict_val['currency'] == current_currency:
-                print(f"{dict_val['currency']} Продаж: {dict_val['saleRateNB']:.2f} Покупка: {dict_val['purchaseRateNB']:.2f}")
+                print(f"{dict_val['currency']} Продаж: {dict_val['saleRateNB']:.2f}\
+                                               Покупка:{dict_val['purchaseRateNB']:.2f}")
         print(35 * '-')
+
 
 if __name__ == '__main__':
     main()

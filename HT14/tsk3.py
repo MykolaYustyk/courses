@@ -9,7 +9,6 @@ import csv
 import requests
 from bs4 import BeautifulSoup as bs
 
-
 BASE_URL = 'https://quotes.toscrape.com'
 FILE_FIELDS = ['Quote', 'Author', "Birth date", 'Birth place', 'Tags']
 
@@ -19,7 +18,7 @@ def get_author_info(link):
     soup = bs(response.content, 'lxml')
     date_of_born = soup.find('span', class_='author-born-date').text
     born_location = soup.find('span', class_='author-born-location').text
-    return [date_of_born, born_location]
+    return date_of_born, born_location
 
 
 def get_tags(qvt):
@@ -51,11 +50,11 @@ def get_info_from_page(soup):
 
 def site_parser():
     result = []
-    for current_page in range(1,11):
+    for current_page in range(1, 11):
         print(f'Parse {current_page} page')
         response = requests.get(f'{BASE_URL}/page/{current_page}/')
         soup = bs(response.content, 'lxml')
-        result .extend(get_info_from_page(soup))
+        result.extend(get_info_from_page(soup))
     return result
 
 
@@ -69,4 +68,3 @@ def write_info_to_csv(result):
 if __name__ == '__main__':
     result = site_parser()
     write_info_to_csv(result)
-    
