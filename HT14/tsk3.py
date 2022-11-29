@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 import csv
 BASE_URL ='https://quotes.toscrape.com'
-FILE_FIELDS = ['Цитата', 'Автор', "Про автора"]
+FILE_FIELDS = ['Qute', 'Author', "About author"]
   
 result = []
 for current_page in range(1,11): 
@@ -17,7 +17,7 @@ for current_page in range(1,11):
     soup = bs(response.content, 'lxml')
     quotes = soup.select('.quote')
     for qvt in quotes:
-        quote = qvt.find('span', class_='text').text
+        quote = qvt.find('span', class_='text').text.strip('”').strip('“')
         author = qvt.find('small', class_='author').text
         author_discription = qvt.find('a').get('href')
         author_discription = BASE_URL + author_discription
