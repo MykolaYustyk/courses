@@ -6,6 +6,7 @@
 - не забудьте перевірку на валідність введених даних
 '''
 from datetime import datetime, timedelta
+
 import requests
 
 list_of_valutes = ('USD', "GBP", 'CAD', "PLZ", 'SEK', "XAU")
@@ -27,7 +28,7 @@ def get_data():
             break
         else:
             print(f'Помилка. Введіть іншу валюту. Банк обслуговує наступні валюти {list_of_valutes}')
-    return (first_date, second_date, current_currency)
+    return first_date, second_date, current_currency
 
 
 def main():
