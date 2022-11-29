@@ -11,7 +11,7 @@ BASE_URL ='https://quotes.toscrape.com'
 FILE_FIELDS = ['Цитата', 'Автор', "Про автора"]
   
 result = []
-for current_page in range(1, 11): 
+for current_page in range(1,11): 
     print(f'Parse {current_page} page')   
     response = requests.get(f'{BASE_URL}/page/{current_page}/')    
     soup = bs(response.content, 'lxml')
@@ -23,8 +23,7 @@ for current_page in range(1, 11):
         author_discription = BASE_URL + author_discription
         result.append((quote, author,author_discription))
 
-with open('result.csv','w',newline='') as file:
-    
+with open('result.csv','w',newline='', encoding='UTF-8') as file:
     writer = csv.writer(file, delimiter=';')
     writer.writerow(FILE_FIELDS)
     writer.writerows(result)
