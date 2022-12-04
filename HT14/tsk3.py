@@ -9,6 +9,7 @@ import csv
 import requests
 from bs4 import BeautifulSoup as bs
 
+
 BASE_URL = 'https://quotes.toscrape.com'
 FILE_FIELDS = ['Quote', 'Author', "Birth date", 'Birth place', 'Tags']
 
@@ -50,7 +51,7 @@ def get_info_from_page(soup):
 
 def site_parser():
     result = []
-    for current_page in range(1, 11):
+    for current_page in range(1,11):
         print(f'Parse {current_page} page')
         response = requests.get(f'{BASE_URL}/page/{current_page}/')
         soup = bs(response.content, 'lxml')

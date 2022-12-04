@@ -17,10 +17,12 @@ def collect(amount, limits, nominals):
             if i:
                 result[current_nominal] = number_of_notes
             return result      
+        
     
 def i_want_to_get(amount_required, limits):
     nominals = sorted(limits.keys(), reverse=1)
     return collect(amount_required, limits, nominals)
+
 
 if __name__ == "__main__":
     limits = {1000: 5, 500: 1, 200:4, 100: 0, 50: 1, 20: 1, 10: 5}

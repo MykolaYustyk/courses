@@ -10,6 +10,7 @@ def get_course():
     print('Поточний курс USD: ')
     print('Покупка:', f"{float(usd['buy']):.2f}")
     print(f'Продаж: {float(usd["sale"]):.2f}')
+    
 
 if __name__ == "__main__":
     get_course()
