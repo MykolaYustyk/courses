@@ -1,13 +1,14 @@
 '''
- Банкомат 4.0: переробіть программу з функціонального підходу програмування на використання класів.
- Додайте шанс 10% отримати бонус на баланс при створенні нового користувача.
+1. Додайте до банкомату меню отримання поточного курсу валют за допомогою requests (можна використати відкрите API ПриватБанку)
 '''
 import sqlite3
 import datetime
+
 from i_want import i_want_to_get
+from get_course import get_course
 
 start_menu_list = ['Вхід', 'Реєстрація', 'Вихід']
-user_menu_list = ['Переглянути баланс', 'Поповнити баланс ', 'Зняти кошти', 'Історія транзакцій', 'До головного меню']
+user_menu_list = ['Переглянути баланс', 'Поповнити баланс ', 'Зняти кошти', 'Історія транзакцій', 'Переглянути курси валют', 'До головного меню']
 admin_menu_list = ['Переглянути баланс банкомата', 'Змінити кількість кюпюр', 'Історія транзакцій банкомата']
 change_coins_menu_list = ['Додати купюри', 'Забрати купюри', 'В попереднє меню']
 
@@ -326,6 +327,8 @@ def user_routine(current_user):
         elif choice == 4:
             current_user.show_user_transaction_history()
         elif choice == 5:
+            get_course()
+        elif choice == 6:
             break
 
 
@@ -349,7 +352,9 @@ def admin_routine():
         elif choice == 7:
             admin.show_user_transaction_history()
         elif choice == 8:
-            break
+             get_course()
+        elif choice == 9:
+            break        
 
 
 def start():
