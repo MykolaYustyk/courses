@@ -19,10 +19,12 @@ user_agent = {
 
 
 class SiteParser:
-    result = []
 
-    def __init__(self, url):
+    def __init__(self, url, result=None):
+        if result is None:
+            result = []
         self.url = url
+        self.result = result
 
     def parse_single_page(self):
         page = requests.get(self.url, headers=user_agent).content
