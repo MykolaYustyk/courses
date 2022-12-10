@@ -28,8 +28,7 @@ class RozetkaAPI:
             self.old_price = int(responce['data']['old_price'])
             self.href = responce['data']['href']
             self.brand = responce['data']['brand']
-            self.category = responce['data']['last_category']['title']
-         
+            self.category = responce['data']['last_category']['title']         
         return asdict(self)
 
 

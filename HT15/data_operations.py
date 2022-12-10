@@ -7,7 +7,7 @@ from rozetka_api import RozetkaAPI
 
 
 class CsvOperation:
-
+    
     def __init__(self, file_name):
         self.file_name = file_name
 
@@ -68,6 +68,5 @@ if __name__ == "__main__":
     csv1 = CsvOperation('test.csv')
     result = csv1.read_id_from_csv()
     db1 = DataBaseOperation('rozetka_goods.db')
-    #db1._create()
     db1.write_info_into_data_base(result)
  
