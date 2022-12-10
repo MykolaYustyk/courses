@@ -19,7 +19,6 @@ def main():
     csv1 = CsvOperation(file_csv_name)
     result = csv1.read_id_from_csv()
     db1 = DataBaseOperation('rozetka_goods.db')
-    db1.create()
     db1.write_info_into_data_base(result)
   
 if __name__ == '__main__':

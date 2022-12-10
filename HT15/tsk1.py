@@ -40,5 +40,5 @@ def write_info_to_csv(result):
 
 if __name__ == "__main__":
     parse_first_page(BASE_URL)
-    parse_next_pages(BASE_URL)
+    #parse_next_pages(BASE_URL)
     write_info_to_csv(result)
