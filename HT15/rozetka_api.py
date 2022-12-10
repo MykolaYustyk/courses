@@ -16,51 +16,51 @@ class RozetkaAPI:
     _category: str = ''
 
     @property
-    def __title(self):
+    def title(self):
         return self._title
 
-    @__title.setter
-    def __title(self, responce):
+    @title.setter
+    def title(self, responce):
         self._title = responce
 
     @property
-    def __price(self):
+    def price(self):
         return self._price
 
-    @__price.setter
-    def __price(self, responce):
+    @price.setter
+    def price(self, responce):
         self._price = responce
 
     @property
-    def __old_price(self):
+    def old_price(self):
         return self._old_price
 
-    @__old_price.setter
-    def __old_price(self, responce):
+    @old_price.setter
+    def old_price(self, responce):
         self._old_price = responce
 
     @property
-    def __href(self):
+    def href(self):
         return self._href
 
-    @__href.setter
-    def __href(self, responce):
+    @href.setter
+    def href(self, responce):
         self._href = responce
 
     @property
-    def __brand(self):
+    def brand(self):
         return self._brand
 
-    @__brand.setter
-    def __brand(self, responce):
+    @brand.setter
+    def brand(self, responce):
         self._brand = responce
 
     @property
-    def __category(self):
+    def category(self):
         return self._category
 
-    @__category.setter
-    def __category(self, responce):
+    @category.setter
+    def category(self, responce):
         self._category = responce
 
     def get_item_data(self, item_id):
@@ -70,16 +70,16 @@ class RozetkaAPI:
         if responce.status_code == requests.codes.ok:
             responce = json.loads(responce.text)
             self.item_id = responce['data']['id']
-            self.__title = responce['data']['title']
-            self.__price = responce['data']['price']
-            self.__old_price = responce['data']['old_price']
-            self.__href = responce['data']['href']
-            self.__brand = responce['data']['brand']
-            self.__category = responce['data']['last_category']['title']
-            return {key.strip('_'): value for key, value in asdict(self).items()}
+            self.title = responce['data']['title']
+            self.price = responce['data']['price']
+            self.old_price = responce['data']['old_price']
+            self.href = responce['data']['href']
+            self.brand = responce['data']['brand']
+            self.category = responce['data']['last_category']['title']
+            return asdict(self)
         else:
-            return dict(zip(['item_id', 'title', 'price', 'old_price','href', 'brand', 'category'],
-                            [self.item_id, '', '', 0, '', '','']))
+            return dict(zip(['item_id', 'title', 'price', 'old_price', 'href', 'brand', 'category'],
+                            [self.item_id, '', '', 0, '', '', '']))
 
 
 if __name__ == "__main__":
