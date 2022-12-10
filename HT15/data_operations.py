@@ -37,7 +37,7 @@ class DataBaseOperation:
     def _create(self):
         with sqlite3.connect(self.data_base_file_name) as con:
             cursor = con.cursor()
-            cursor.execute(f'''CREATE TABLE IF NOT EXISTS goods_info(
+            cursor.execute('''CREATE TABLE IF NOT EXISTS goods_info(
                 id INTEGER,
                 title TEXT,
                 price INTEGER,
