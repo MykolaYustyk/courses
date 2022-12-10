@@ -1,49 +1,39 @@
 import csv
 import sqlite3
-
-from dataclasses import dataclass
+import os.path
 
 from rozetka_api import RozetkaAPI
 
 
-@dataclass
 class CsvOperation:
-    _file_name: str = ''
 
-    @property
-    def __file_name(self):
-        return self._file_name
-
-    @__file_name.setter
-    def __file_name(self, name):
-        self._file_name = name
+    def __init__(self, file_name):
+        self.file_name = file_name
 
     def read_id_from_csv(self):
-        result = []
-        with open(self._file_name, 'r', newline='', encoding='utf-8') as file:
-            reader = csv.DictReader(file, delimiter=',', fieldnames=['_id'])
+        list_of_goods = []
+        with open(self.file_name, 'r', newline='', encoding='utf-8') as file:
+            reader = csv.DictReader(file, delimiter=',', fieldnames=['id'])
             reader = list(reader)
             for row in reader[1:]:
-                item_id = int(row['_id'])
+                item_id = int(row['id'])
                 current_item = RozetkaAPI(item_id)
-                result.append(current_item.get_item_data(item_id))
-        return result
+                good = current_item.get_item_data()
+                if good['price'] == 0:
+                    print(f'Сайт не містить інформацію про товар з номером {good["item_id"]}')
+                else:
+                    print(f'Товар № {good["item_id"]} заноситься в базу даних')
+                    list_of_goods.append(current_item.get_item_data())
+        return list_of_goods
 
 
-@dataclass
 class DataBaseOperation:
-    _data_base_file_name: str = ''
 
-    @property
-    def __data_base_file_name(self):
-        return self._data_base_file_name
+    def __init__(self, data_base_file_name):
+        self.data_base_file_name = data_base_file_name
 
-    @__data_base_file_name.setter
-    def __data_base_file_name(self, name):
-        self._data_base_file_name = name
-
-    def create(self):
-        with sqlite3.connect(self.__data_base_file_name) as con:
+    def _create(self):
+        with sqlite3.connect(self.data_base_file_name) as con:
             cursor = con.cursor()
             cursor.execute(f'''CREATE TABLE IF NOT EXISTS goods_info(
                 id INTEGER,
@@ -57,25 +47,23 @@ class DataBaseOperation:
             con.commit()
 
     def write_info_into_data_base(self, goods_list):
-        with sqlite3.connect(self.__data_base_file_name) as con:
+        if not os.path.exists(self.data_base_file_name):
+            self._create()
+        with sqlite3.connect(self.data_base_file_name) as con:
             cursor = con.cursor()
             for good in goods_list:
-                if good['_price'] == '0' or good['_price'] == '':
-                    print(f'Сайт не містить інформацію про товар з номером {good["item_id"]}')
-                else:
-                    print(f'Товар № {good["item_id"]} заноситься в базу даних')
-                    cursor.execute(""" INSERT INTO goods_info
+                cursor.execute(""" INSERT INTO goods_info
                                     VALUES(?, ?, ?, ?, ?, ?, ?)""",
-                                   (good['item_id'], good['_title'], int(good['_price']),
-                                    int(good['_old_price']), good['_href'], good['_brand'],
-                                    good['_category'])
-                                   )
-                    con.commit()
+                               (good['item_id'], good['title'], int(good['price']),
+                                int(good['old_price']), good['href'], good['brand'],
+                                good['category'])
+                               )
+                con.commit()
 
 
 if __name__ == "__main__":
     csv1 = CsvOperation('test.csv')
     result = csv1.read_id_from_csv()
     db1 = DataBaseOperation('rozetka_goods.db')
-    db1.create()
+    db1._create()
     db1.write_info_into_data_base(result)
