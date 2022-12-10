@@ -1,36 +1,38 @@
 import json
 
-from dataclasses import dataclass, asdict
-
 import requests
 
 
-@dataclass
 class RozetkaAPI:
-    item_id: int = 0
-    title: str = ''
-    price: int = 0
-    old_price: int = 0
-    href: str = ''
-    brand: str = ''
-    category: str = ''
+    def __init__(self, item_id=0):
+        self.item_id = item_id
 
-    def get_item_data(self):
+    @staticmethod
+    def get_item_data(current_id):
+        dict_of_item = {}
         responce = requests.get(
             f'https://rozetka.com.ua/api/product-api/v4/goods/get-main?\
-            front-type=xl&country=UA&lang=ua&goodsId={self.item_id}')
+            front-type=xl&country=UA&lang=ua&goodsId={current_id}')
         if responce.status_code == requests.codes.ok:
             responce = json.loads(responce.text)
-            self.item_id = responce['data']['id']
-            self.title = responce['data']['title']
-            self.price = int(responce['data']['price'])
-            self.old_price = int(responce['data']['old_price'])
-            self.href = responce['data']['href']
-            self.brand = responce['data']['brand']
-            self.category = responce['data']['last_category']['title']
-        return asdict(self)
+            dict_of_item['item_id'] = responce['data']['id']
+            dict_of_item['title'] = responce['data']['title']
+            dict_of_item['price'] = int(responce['data']['price'])
+            dict_of_item['old_price'] = int(responce['data']['old_price'])
+            dict_of_item['href'] = responce['data']['href']
+            dict_of_item['brand'] = responce['data']['brand']
+            dict_of_item['category'] = responce['data']['last_category']['title']
+        else:
+            dict_of_item = {'item_id': current_id,
+                            'title': '',
+                            'price': 0,
+                            'old_price': 0,
+                            'href': '',
+                            'brand': '',
+                            'category': ''}
+        return dict_of_item
 
 
 if __name__ == "__main__":
-    item = RozetkaAPI(item_id=100000)
-    print(item.get_item_data())
+    item = RozetkaAPI()
+    print(item.get_item_data(3365089))

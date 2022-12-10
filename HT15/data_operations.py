@@ -17,13 +17,12 @@ class CsvOperation:
             reader = list(reader)
             for row in reader[1:]:
                 item_id = int(row['id'])
-                current_item = RozetkaAPI(item_id)
-                good = current_item.get_item_data()
+                good = RozetkaAPI().get_item_data(item_id)
                 if good['price'] == 0:
                     print(f'Сайт не містить інформацію про товар з номером {good["item_id"]}')
                 else:
                     print(f'Товар № {good["item_id"]} заноситься в базу даних')
-                    list_of_goods.append(current_item.get_item_data())
+                    list_of_goods.append(good)
         return list_of_goods
 
 
