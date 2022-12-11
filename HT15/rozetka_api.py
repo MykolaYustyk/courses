@@ -4,8 +4,6 @@ import requests
 
 
 class RozetkaAPI:
-    def __init__(self, item_id=0):
-        self.item_id = item_id
 
     @staticmethod
     def get_item_data(current_id):
@@ -13,8 +11,8 @@ class RozetkaAPI:
         responce = requests.get(
             f'https://rozetka.com.ua/api/product-api/v4/goods/get-main?\
             front-type=xl&country=UA&lang=ua&goodsId={current_id}')
-        if responce.status_code == requests.codes.ok:
-            responce = json.loads(responce.text)
+        if responce.status_code == 200:
+            responce = responce.json()
             dict_of_item['item_id'] = responce['data']['id']
             dict_of_item['title'] = responce['data']['title']
             dict_of_item['price'] = int(responce['data']['price'])
@@ -34,5 +32,4 @@ class RozetkaAPI:
 
 
 if __name__ == "__main__":
-    item = RozetkaAPI()
-    print(item.get_item_data(3365089))
+    print(RozetkaAPI().get_item_data(3365089))

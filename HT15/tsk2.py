@@ -14,9 +14,8 @@ from data_operations import CsvOperation, DataBaseOperation
 def main():
     file_csv_name = input('Введіть назву файла з номерами товарів: ')
     csv1 = CsvOperation(file_csv_name)
-    list_of_goods = csv1.read_id_from_csv()
-    db1 = DataBaseOperation('rozetka_goods.db')
-    db1.write_info_into_data_base(list_of_goods)
+    goods_list = csv1.list_of_goods
+    DataBaseOperation('rozetka_goods.db', goods_list)
 
 
 if __name__ == '__main__':
