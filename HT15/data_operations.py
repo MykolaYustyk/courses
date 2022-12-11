@@ -6,13 +6,19 @@ from rozetka_api import RozetkaAPI
 
 class CsvOperation:
 
-    def __init__(self, file_name):
-        self.file_name = file_name
-        self.list_of_goods = self._parse_goods()
-
     @staticmethod
     def read_id_from_csv(row_dict):
         return int(row_dict['id'])
+
+
+class SiteParser:
+
+    def __init__(self, file_name):
+        self.file_name = file_name
+
+    @property
+    def get_list_of_goods(self):
+        return self._parse_goods()
 
     def _parse_goods(self):
         list_of_goods = []
@@ -20,8 +26,8 @@ class CsvOperation:
             reader = csv.DictReader(file, delimiter=',', fieldnames=['id'])
             reader = list(reader)
             for row in reader[1:]:
-                item_id = self.read_id_from_csv(row)
-                good = RozetkaAPI().get_item_data(item_id)
+                item_id = CsvOperation.read_id_from_csv(row)
+                good = RozetkaAPI.get_item_data(item_id)
                 if good['price'] == 0:
                     print(f'Сайт не містить інформацію про товар з номером {good["item_id"]}')
                 else:
@@ -32,11 +38,9 @@ class CsvOperation:
 
 class DataBaseOperation:
 
-    def __init__(self, data_base_file_name,goods_list):
+    def __init__(self, data_base_file_name, items_list):
         self.data_base_file_name = data_base_file_name
-        self._create()
-        self.goods_list = goods_list
-        self.write_info_into_data_base()
+        self.items_list = items_list
 
     def _create(self):
         with sqlite3.connect(self.data_base_file_name) as con:
@@ -53,9 +57,10 @@ class DataBaseOperation:
             con.commit()
 
     def write_info_into_data_base(self):
+        self._create()
         with sqlite3.connect(self.data_base_file_name) as con:
             cursor = con.cursor()
-            for good in self.goods_list:
+            for good in self.items_list:
                 cursor.execute(""" INSERT INTO goods_info
                                     VALUES(?, ?, ?, ?, ?, ?, ?)""",
                                (good['item_id'], good['title'], int(good['price']),
@@ -66,6 +71,7 @@ class DataBaseOperation:
 
 
 if __name__ == "__main__":
-    csv1 = CsvOperation('test.csv')
-    goods_list = csv1.list_of_goods
+    parser = SiteParser('test.csv')
+    goods_list = parser.get_list_of_goods
     db1 = DataBaseOperation('rozetka_goods.db', goods_list)
+    db1.write_info_into_data_base()

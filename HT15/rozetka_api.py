@@ -1,5 +1,3 @@
-import json
-
 import requests
 
 
@@ -27,9 +25,10 @@ class RozetkaAPI:
                             'old_price': 0,
                             'href': '',
                             'brand': '',
-                            'category': ''}
+                            'category': ''
+                            }
         return dict_of_item
 
 
 if __name__ == "__main__":
-    print(RozetkaAPI().get_item_data(3365089))
+    print(RozetkaAPI.get_item_data(3365089))
