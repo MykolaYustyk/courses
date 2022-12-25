@@ -12,7 +12,7 @@ BOT_NAME = 'webstore'
 SPIDER_MODULES = ['webstore.spiders']
 NEWSPIDER_MODULE = 'webstore.spiders'
 
-
+CLOSESPIDER_PAGECOUNT = 20
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'webstore (+http://www.yourdomain.com)'
 
