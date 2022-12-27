@@ -28,6 +28,14 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 
 
+def create_output_folder():
+    if not (os.path.exists('output')):
+        os.mkdir('output')
+    else:
+        os.system('cd output')
+        for file in os.scandir(os.path.abspath('output')):
+            os.unlink(file.path)
+
 
 
 def read_csv(driver):
@@ -67,11 +75,14 @@ def preview_robot(driver):
     button_preview.click()
     time.sleep(2)
 
+
 def save_robot_picture(driver, robot):
     robot_picture = driver.find_element(By.CSS_SELECTOR, 'div[id="robot-preview-image"]')
     wait = WebDriverWait(driver, 10)
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="robot-preview-image"]')))
-    robot_picture.screenshot(f'robot{robot["Order number"]}.png')
+    os.system('cd output')
+    robot_picture.screenshot(f'output\\robot{robot["Order number"]}.png')
+
 
 def click_button_order(driver):
     button_order = driver.find_element(By.CSS_SELECTOR, 'button[id="order"]')
@@ -88,6 +99,7 @@ def order_another_robot(driver):
 def main():
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.implicitly_wait(10)
+    create_output_folder()
     list_of_robots = read_csv(driver)
     click_order_your_robot(driver)
     for robot in list_of_robots:
