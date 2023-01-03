@@ -15,10 +15,8 @@
   - замовте наступного робота (шляхом натискання відповідної кнопки)
 
 """
-import time
 import os
 import csv
-
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -37,7 +35,6 @@ def create_output_folder():
             os.unlink(file.path)
 
 
-
 def read_csv(driver):
     driver.get('https://robotsparebinindustries.com/orders.csv')
     robot_input = []
@@ -52,10 +49,9 @@ def click_order_your_robot(driver):
     driver.get('https://robotsparebinindustries.com/')
     order_robot_button = driver.find_element(By.CSS_SELECTOR, 'a.nav-link')
     order_robot_button.click()
-    time.sleep(1)
 
 
-def set_robot_parties(driver, robot):
+def set_robot_parts(driver, robot):
     driver.get('https://robotsparebinindustries.com/#/robot-order')
     button_ok = driver.find_element(By.XPATH, '//*[@id="root"]/div/div[2]/div/div/div/div/div/button[2]')
     button_ok.click()
@@ -73,28 +69,35 @@ def set_robot_parties(driver, robot):
 def preview_robot(driver):
     button_preview = driver.find_element(By.CSS_SELECTOR, 'button[id="preview"]')
     button_preview.click()
-    time.sleep(2)
 
 
 def save_robot_picture(driver, robot):
     robot_picture = driver.find_element(By.CSS_SELECTOR, 'div[id="robot-preview-image"]')
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="robot-preview-image"]')))
-    os.system('cd output')
-    robot_picture.screenshot(f'output\\robot{robot["Order number"]}.png')
+    wait = WebDriverWait(driver, 20)
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[id="robot-preview-image"]')))
+    file_name = f'robot{robot["Order number"]}.png'
+    robot_picture.screenshot(f'output\\{file_name}')
+    return file_name
 
 
 def click_button_order(driver):
-    button_order = driver.find_element(By.CSS_SELECTOR, 'button[id="order"]')
     while True:
-        button_order.click()
-        check_visible = driver.find_element(By.CSS_SELECTOR, 'div[id="receipt"]').is_displayed()
-        if check_visible:
+        button_order = WebDriverWait(driver, 20)
+        button_order.until(EC.element_to_be_clickable((By.CLASS_NAME, 'btn-primary'))).click()
+        receipt = WebDriverWait(driver, 20)
+        if receipt.until(EC.visibility_of_element_located((By.CLASS_NAME, 'alert-success'))).is_displayed():
             break
+
+
+def rename_robot_file(driver, file):
+    new_name = driver.find_element(By.XPATH, '//*[@id="receipt"]/p[1]').text
+    os.rename(f'output\\{file}', f'output\\{new_name}.png')
+
 
 def order_another_robot(driver):
     button_order_another_robot = driver.find_element(By.CSS_SELECTOR, 'button[id="order-another"]')
     button_order_another_robot.click()
+
 
 def main():
     driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -103,10 +106,11 @@ def main():
     list_of_robots = read_csv(driver)
     click_order_your_robot(driver)
     for robot in list_of_robots:
-        set_robot_parties(driver, robot)
+        set_robot_parts(driver, robot)
         preview_robot(driver)
-        save_robot_picture(driver, robot)
+        current_robot = save_robot_picture(driver, robot)
         click_button_order(driver)
+        rename_robot_file(driver, current_robot)
         order_another_robot(driver)
     driver.quit()
 
