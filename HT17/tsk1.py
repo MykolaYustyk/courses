@@ -24,6 +24,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 
 def create_output_folder():
@@ -73,14 +74,14 @@ def preview_robot(driver):
 
 def save_robot_picture(driver, robot):
     robot_picture = driver.find_element(By.CSS_SELECTOR, 'div[id="robot-preview-image"]')
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.visibility_of_all_elements_located((By.CSS_SELECTOR, 'div[id="robot-preview-image"]')))
+    wait = WebDriverWait(driver, 20)
+    wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div[id="robot-preview-image"]')))
     file_name = f'robot{robot["Order number"]}.png'
     robot_picture.screenshot(f'output\\{file_name}')
     return file_name
 
 
-def click_button_order(driver, robot):
+def click_button_order(driver):
     while True:
         try:
             button_order = WebDriverWait(driver, 2)
@@ -89,7 +90,7 @@ def click_button_order(driver, robot):
             check_receipt = receipt.until(EC.visibility_of_element_located((By.CLASS_NAME, 'alert-success'))).is_displayed()
             if check_receipt:
                 break
-        except:
+        except TimeoutException:
             continue
 
 
@@ -114,7 +115,7 @@ def main():
         set_robot_parts(driver, robot)
         preview_robot(driver)
         current_robot = save_robot_picture(driver, robot)
-        click_button_order(driver, robot)
+        click_button_order(driver)
         rename_robot_file(driver, current_robot)
         order_another_robot(driver)
     driver.quit()
